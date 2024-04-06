@@ -1,0 +1,210 @@
+---@diagnostic disable: unused-local, redefined-local
+local wezterm = require("wezterm")
+local config = wezterm.config_builder()
+
+-- set startup window position
+wezterm.on("gui-startup", function(cmd)
+	local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
+	window:gui_window():set_position(175, 45)
+end)
+
+-- set tab title
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+	local pane_title = tab.active_pane.title
+	local user_title = tab.active_pane.user_vars.panetitle
+	local foreground = "#808080"
+	if user_title ~= nil and #user_title > 0 then
+		pane_title = user_title
+	end
+	if tab.is_active then
+		foreground = "white"
+	end
+
+	return {
+		{ Background = { Color = "#31313f" } },
+		{ Foreground = { Color = foreground } },
+		{ Text = " " .. pane_title .. " " },
+	}
+end)
+
+-- set initial size for screens
+if false then
+	config.initial_rows = 40
+	config.initial_cols = 148
+else
+	config.initial_rows = 45
+	config.initial_cols = 180
+end
+
+-- custom title name
+---@diagnostic disable-next-line: redefined-local, unused-local
+wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
+	return " ᕕ( ᐛ )ᕗ "
+end)
+
+-- font
+config.font = wezterm.font_with_fallback({
+	-- { family = "JetBrains Mono" },
+	{ family = "Iosevka Cloudtide" },
+	{ family = "Symbols Nerd Font Mono", scale = 0.85 },
+	{ family = "LXGW WenKai", scale = 1.05 }, --中文测试
+	{ family = "Cambria Math", scale = 1.0 },
+})
+
+-- set front_end
+config.front_end = "WebGpu"
+config.webgpu_power_preference = "HighPerformance"
+
+-- config of tab bar
+config.use_fancy_tab_bar = true
+config.hide_tab_bar_if_only_one_tab = true
+config.show_new_tab_button_in_tab_bar = false
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+config.enable_tab_bar = true
+config.window_frame = {
+	font = wezterm.font({ family = "JetBrains Mono", weight = "Bold" }),
+	active_titlebar_bg = "#31313f",
+}
+
+config.colors = {
+	tab_bar = {
+		-- The color of the inactive tab bar edge/divider
+		inactive_tab_edge = "#31313f",
+	},
+}
+
+-- set transparent
+config.window_background_opacity = 0.83
+config.win32_system_backdrop = "Acrylic" -- "Auto" or "Acrylic"
+
+-- set domains
+config.unix_domains = {}
+config.ssh_domains = {
+	{
+		name = "MyServer",
+		remote_address = "192.131.142.134:11451",
+		multiplexing = "None",
+		username = "parsifa1",
+		default_prog = { "fish" },
+		assume_shell = "Posix",
+	},
+	-- {
+	-- 	name = "Arch",
+	-- 	remote_address = "127.0.0.1:11451",
+	-- 	username = "parsifa1",
+	-- 	multiplexing = "None",
+	-- 	default_prog = { "fish" },
+	-- 	assume_shell = "Posix",
+	-- 	no_agent_auth = true,
+	-- },
+	{
+		name = "Nix",
+		remote_address = "127.0.0.1:14514",
+		username = "parsifa1",
+		multiplexing = "None",
+		default_prog = { "fish" },
+		assume_shell = "Posix",
+		no_agent_auth = true,
+	},
+}
+
+-- config wsl_domains
+config.wsl_domains = {
+	{
+		name = "WSL:Nixos",
+		distribution = "Nixos",
+	},
+}
+
+-- launch_menu
+local launch_menu = {}
+if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+	table.insert(launch_menu, {
+		label = "PowerShell",
+		domain = { DomainName = "local" },
+		args = { "pwsh", "-NoLogo" },
+	})
+end
+config.launch_menu = launch_menu
+
+-- key config
+config.leader = { key = "w", mods = "ALT", timeout_milliseconds = 5000 }
+config.keys = {
+	-- set <C-v> for paste
+	{
+		key = "c",
+		mods = "CTRL",
+		action = wezterm.action_callback(function(window, pane)
+			local sel = window:get_selection_text_for_pane(pane)
+			if pane:is_alt_screen_active() or (not sel or sel == "") then
+				window:perform_action(wezterm.action.SendKey({ key = "c", mods = "CTRL" }), pane)
+			else
+				window:perform_action(wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }), pane)
+			end
+		end),
+	},
+	{ key = "v", mods = "CTRL", action = wezterm.action.PasteFrom("Clipboard") },
+	-- set launch_menu
+	{
+		key = "Tab",
+		mods = "CTRL",
+		action = wezterm.action.ShowLauncherArgs({ flags = "LAUNCH_MENU_ITEMS | DOMAINS" }),
+	},
+	{
+		key = ";",
+		mods = "LEADER",
+		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
+	},
+	{
+		key = "'",
+		mods = "LEADER",
+		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+	},
+	{
+		key = "d",
+		mods = "CTRL|SHIFT",
+		action = wezterm.action.SwitchToWorkspace({
+			name = "default",
+		}),
+	},
+	{
+		key = "m",
+		mods = "CTRL|SHIFT",
+		action = wezterm.action.SwitchToWorkspace({
+			name = "monitoring",
+			spawn = {
+				args = { "btop" },
+			},
+		}),
+	},
+	-- Change Active Pane
+	{ key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
+	{ key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
+	{ key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
+	{ key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },
+}
+for i = 1, 8 do
+	-- CTRL+ALT + number to activate that tab
+	table.insert(config.keys, {
+		key = tostring(i),
+		mods = "ALT",
+		action = wezterm.action.ActivateTab(i - 1),
+	})
+end -- others
+
+config.color_scheme = "Catppuccin Mocha (Gogh)"
+config.animation_fps = 165
+config.default_domain = "Nix"
+config.font_size = 13.8
+config.max_fps = 165
+config.enable_kitty_graphics = true
+config.window_close_confirmation = "NeverPrompt"
+
+config.window_padding = {
+	left = "0.4cell",
+	right = "0.15cell",
+	top = "0.15cell",
+	bottom = "0cell",
+}
+
+return config
