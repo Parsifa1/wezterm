@@ -33,7 +33,7 @@ if false then
 	config.initial_cols = 148
 else
 	config.initial_rows = 45
-	config.initial_cols = 180
+	config.initial_cols = 175
 end
 
 -- custom title name
@@ -83,20 +83,11 @@ config.ssh_domains = {
 	{
 		name = "MyServer",
 		remote_address = "192.131.142.134:11451",
-		multiplexing = "None",
 		username = "parsifa1",
 		default_prog = { "fish" },
 		assume_shell = "Posix",
 	},
-	-- {
-	-- 	name = "Arch",
-	-- 	remote_address = "127.0.0.1:11451",
-	-- 	username = "parsifa1",
-	-- 	multiplexing = "None",
-	-- 	default_prog = { "fish" },
-	-- 	assume_shell = "Posix",
-	-- 	no_agent_auth = true,
-	-- },
+
 	{
 		name = "Nix",
 		remote_address = "127.0.0.1:14514",
