@@ -10,11 +10,9 @@ end)
 
 -- set tab title
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local title = tab.active_pane.title
-	local icon = { Nix = "❄️ Nix", MyServer = "🐬 MyServer", ["local"] = "🦚 PowerShell" }
-	if tab.active_pane.domain_name then
-		title = icon[tab.active_pane.domain_name]
-	end
+	local icon = { Nix = "❄️ Nix", MyServer = "🐬 MyServer", ["local"] = "🦚 Local" }
+	local title = icon[tab.active_pane.domain_name] or tab.active_pane.title
+
 	local foreground = "#808080"
 	if tab.is_active then
 		foreground = "white"
@@ -26,22 +24,7 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 	}
 end)
 
--- set initial size for screens
-if false then
-	config.initial_rows = 40
-	config.initial_cols = 148
-else
-	config.initial_rows = 45
-	config.initial_cols = 175
-end
-
--- custom title name
----@diagnostic disable-next-line: redefined-local, unused-local
-wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
-	return " ᕕ( ᐛ )ᕗ "
-end)
-
--- font
+-- fonts
 config.font = wezterm.font_with_fallback({
 	-- { family = "JetBrains Mono" },
 	{ family = "Iosevka Cloudtide" },
@@ -50,18 +33,17 @@ config.font = wezterm.font_with_fallback({
 	{ family = "Cambria Math", scale = 1.0 },
 })
 
--- set front_end
-config.front_end = "WebGpu"
-config.webgpu_power_preference = "HighPerformance"
+-- padding
+config.window_padding = {
+	left = "0.4cell",
+	right = "0.15cell",
+	top = "0.15cell",
+	bottom = "0cell",
+}
 
--- config of tab bar
-config.use_fancy_tab_bar = true
-config.hide_tab_bar_if_only_one_tab = true
-config.show_new_tab_button_in_tab_bar = false
-config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
-config.enable_tab_bar = true
+-- colors
 config.window_frame = {
-	font = wezterm.font({ family = "JetBrains Mono", weight = "Bold" }),
+	font = wezterm.font({ family = "Iosevka Cloudtide", weight = "Bold", scale = 1.1 }),
 	active_titlebar_bg = "#31313f",
 }
 
@@ -72,9 +54,10 @@ config.colors = {
 	},
 }
 
--- set transparent
-config.window_background_opacity = 0.83
-config.win32_system_backdrop = "Acrylic" -- "Auto" or "Acrylic"
+-- custom title name
+wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
+	return " ᕕ( ᐛ )ᕗ "
+end)
 
 -- set domains
 config.unix_domains = {}
@@ -83,6 +66,8 @@ config.ssh_domains = {
 		name = "MyServer",
 		remote_address = "192.131.142.134:11451",
 		username = "parsifa1",
+		default_prog = { "fish" },
+		assume_shell = "Posix",
 		local_echo_threshold_ms = 500,
 	},
 
@@ -96,13 +81,11 @@ config.ssh_domains = {
 		no_agent_auth = true,
 	},
 }
-
--- config wsl_domains
 config.wsl_domains = {
-	{
-		name = "WSL:Nixos",
-		distribution = "Nixos",
-	},
+	-- {
+	-- 	name = "WSL:Nixos",
+	-- 	distribution = "Nixos",
+	-- },
 }
 
 -- launch_menu
@@ -167,10 +150,10 @@ config.keys = {
 		}),
 	},
 	{
-    key = 'd',
-    mods = 'ALT',
-    action = wezterm.action.CloseCurrentTab { confirm = true },
-  },
+		key = "d",
+		mods = "ALT",
+		action = wezterm.action.CloseCurrentTab({ confirm = false }),
+	},
 	-- Change Active Pane
 	{ key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
 	{ key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
@@ -184,7 +167,27 @@ for i = 1, 8 do
 		mods = "ALT",
 		action = wezterm.action.ActivateTab(i - 1),
 	})
-end -- others
+end
+
+-- set initial size for screens
+config.initial_rows = 45
+config.initial_cols = 175
+
+-- set front_end
+config.front_end = "WebGpu"
+config.webgpu_power_preference = "HighPerformance"
+
+-- config of tab bar
+config.use_fancy_tab_bar = true
+config.hide_tab_bar_if_only_one_tab = true
+config.show_new_tab_button_in_tab_bar = false
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+config.enable_tab_bar = true
+
+-- set transparent
+config.window_background_opacity = 0.83
+config.win32_system_backdrop = "Acrylic" -- "Auto" or "Acrylic"
+
 
 config.color_scheme = "Catppuccin Mocha (Gogh)"
 config.animation_fps = 165
@@ -194,11 +197,5 @@ config.max_fps = 165
 config.enable_kitty_graphics = true
 config.window_close_confirmation = "NeverPrompt"
 
-config.window_padding = {
-	left = "0.4cell",
-	right = "0.15cell",
-	top = "0.15cell",
-	bottom = "0cell",
-}
 
 return config
