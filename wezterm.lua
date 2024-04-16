@@ -5,25 +5,24 @@ local config = wezterm.config_builder()
 -- set startup window position
 wezterm.on("gui-startup", function(cmd)
 	local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
-	window:gui_window():set_position(175, 45)
+	window:gui_window():set_position(185, 45)
 end)
 
 -- set tab title
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local pane_title = tab.active_pane.title
-	local user_title = tab.active_pane.user_vars.panetitle
-	local foreground = "#808080"
-	if user_title ~= nil and #user_title > 0 then
-		pane_title = user_title
+	local title = tab.active_pane.title
+	local icon = { Nix = "❄️ Nix", MyServer = "🐬 MyServer", ["local"] = "🦚 PowerShell" }
+	if tab.active_pane.domain_name then
+		title = icon[tab.active_pane.domain_name]
 	end
+	local foreground = "#808080"
 	if tab.is_active then
 		foreground = "white"
 	end
-
 	return {
 		{ Background = { Color = "#31313f" } },
 		{ Foreground = { Color = foreground } },
-		{ Text = " " .. pane_title .. " " },
+		{ Text = " " .. title .. " " },
 	}
 end)
 
@@ -84,8 +83,7 @@ config.ssh_domains = {
 		name = "MyServer",
 		remote_address = "192.131.142.134:11451",
 		username = "parsifa1",
-		default_prog = { "fish" },
-		assume_shell = "Posix",
+		local_echo_threshold_ms = 500,
 	},
 
 	{
@@ -168,6 +166,11 @@ config.keys = {
 			},
 		}),
 	},
+	{
+    key = 'd',
+    mods = 'ALT',
+    action = wezterm.action.CloseCurrentTab { confirm = true },
+  },
 	-- Change Active Pane
 	{ key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
 	{ key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
