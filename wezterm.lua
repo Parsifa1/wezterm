@@ -25,12 +25,13 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 end)
 
 -- fonts
+config.font_size = 13.8
 config.font = wezterm.font_with_fallback({
 	-- { family = "JetBrains Mono" },
-	{ family = "Iosevka Cloudtide" },
+	{ family = "IosevkaCloudtide Nerd Font" },
 	{ family = "Symbols Nerd Font Mono", scale = 0.85 },
 	{ family = "LXGW WenKai", scale = 1.05 }, --中文测试
-	{ family = "Cambria Math", scale = 1.0 },
+	{ family = "Concrete Math", scale = 1.0 },
 })
 
 -- padding
@@ -47,12 +48,7 @@ config.window_frame = {
 	active_titlebar_bg = "#31313f",
 }
 
-config.colors = {
-	tab_bar = {
-		-- The color of the inactive tab bar edge/divider
-		inactive_tab_edge = "#31313f",
-	},
-}
+config.colors = { tab_bar = { inactive_tab_edge = "#31313f" } }
 
 -- custom title name
 wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
@@ -60,7 +56,6 @@ wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
 end)
 
 -- set domains
-config.unix_domains = {}
 config.ssh_domains = {
 	{
 		name = "MyServer",
@@ -70,7 +65,6 @@ config.ssh_domains = {
 		assume_shell = "Posix",
 		local_echo_threshold_ms = 500,
 	},
-
 	{
 		name = "Nix",
 		remote_address = "127.0.0.1:14514",
@@ -89,14 +83,18 @@ config.wsl_domains = {
 }
 
 -- launch_menu
-local launch_menu = {}
-if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-	table.insert(launch_menu, {
-		label = "PowerShell",
-		domain = { DomainName = "local" },
-		args = { "pwsh", "-NoLogo" },
-	})
-end
+local launch_menu = {
+	{ label = "❄️ Nix", domain = { DomainName = "Nix" } },
+	{ label = "🐬 MyServer", domain = { DomainName = "MyServer" } },
+}
+-- if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+table.insert(launch_menu, {
+	label = "🦚 Local",
+	domain = { DomainName = "local" },
+	-- args = { "powershell.exe", "-NoLogo" },
+	args = { "nu", "-i" },
+})
+-- end
 config.launch_menu = launch_menu
 
 -- key config
@@ -120,7 +118,7 @@ config.keys = {
 	{
 		key = "Tab",
 		mods = "CTRL",
-		action = wezterm.action.ShowLauncherArgs({ flags = "LAUNCH_MENU_ITEMS | DOMAINS" }),
+		action = wezterm.action.ShowLauncherArgs({ flags = "LAUNCH_MENU_ITEMS" }),
 	},
 	{
 		key = ";",
@@ -170,11 +168,10 @@ for i = 1, 8 do
 end
 
 -- set initial size for screens
-config.initial_rows = 45
-config.initial_cols = 175
-
+config.initial_rows = 43
+config.initial_cols = 170
 -- set front_end
-config.front_end = "WebGpu"
+config.front_end = "OpenGL"
 config.webgpu_power_preference = "HighPerformance"
 
 -- config of tab bar
@@ -183,19 +180,18 @@ config.hide_tab_bar_if_only_one_tab = true
 config.show_new_tab_button_in_tab_bar = false
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.enable_tab_bar = true
+config.default_cursor_style = "BlinkingBlock"
+-- config.cursor_blink_ease_in = "Linear"
+-- config.cursor_blink_ease_out = "Linear"
 
 -- set transparent
 config.window_background_opacity = 0.83
 config.win32_system_backdrop = "Acrylic" -- "Auto" or "Acrylic"
-
-
 config.color_scheme = "Catppuccin Mocha (Gogh)"
 config.animation_fps = 165
 config.default_domain = "Nix"
-config.font_size = 13.8
 config.max_fps = 165
 config.enable_kitty_graphics = true
 config.window_close_confirmation = "NeverPrompt"
-
 
 return config
