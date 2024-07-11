@@ -1,4 +1,4 @@
----@diagnostic disable: unused-local, redefined-local
+---@diagnostic disable: unused-local, redefined-local, undefined-field
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
@@ -10,7 +10,7 @@ end)
 
 -- set tab title
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local icon = { Nix = "❄️ Nix", MyServer = "🐬 MyServer", ["local"] = "🦚 Local" }
+	local icon = { Nix = "❄️ Nix", MyServer = "🍥 MyServer", ["local"] = "🦚 Local" }
 	local title = icon[tab.active_pane.domain_name] or tab.active_pane.title
 
 	local foreground = "#808080"
@@ -18,7 +18,8 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 		foreground = "white"
 	end
 	return {
-		{ Background = { Color = "#31313f" } },
+		-- { Background = { Color = "#31313f" } },
+		{ Background = { Color = "#282828" } },
 		{ Foreground = { Color = foreground } },
 		{ Text = " " .. title .. " " },
 	}
@@ -28,10 +29,10 @@ end)
 config.font_size = 13.8
 config.font = wezterm.font_with_fallback({
 	-- { family = "JetBrains Mono" },
-	{ family = "IosevkaCloudtide Nerd Font" },
+	{ family = "Iosevka Cloudtide" },
 	{ family = "Symbols Nerd Font Mono", scale = 0.85 },
-	{ family = "LXGW WenKai", scale = 1.05 }, --中文测试
 	{ family = "Concrete Math", scale = 1.0 },
+	{ family = "LXGW WenKai", scale = 1.05 }, --中文测试
 })
 
 -- padding
@@ -45,10 +46,12 @@ config.window_padding = {
 -- colors
 config.window_frame = {
 	font = wezterm.font({ family = "Iosevka Cloudtide", weight = "Bold", scale = 1.1 }),
-	active_titlebar_bg = "#31313f",
+	active_titlebar_bg = "#282828",
+	-- active_titlebar_bg = "#31313f",
 }
 
-config.colors = { tab_bar = { inactive_tab_edge = "#31313f" } }
+config.colors = { tab_bar = { inactive_tab_edge = "#282828" } }
+-- config.colors = { tab_bar = { inactive_tab_edge = "#31313f" } }
 
 -- custom title name
 wezterm.on("format-window-title", function(tab, pane, tabs, panes, config)
@@ -63,6 +66,7 @@ config.ssh_domains = {
 		username = "parsifa1",
 		default_prog = { "fish" },
 		assume_shell = "Posix",
+		-- timeout = 10,
 		local_echo_threshold_ms = 500,
 	},
 	{
@@ -75,30 +79,24 @@ config.ssh_domains = {
 		no_agent_auth = true,
 	},
 }
-config.wsl_domains = {
-	-- {
-	-- 	name = "WSL:Nixos",
-	-- 	distribution = "Nixos",
-	-- },
-}
+config.wsl_domains = {}
 
 -- launch_menu
 local launch_menu = {
 	{ label = "❄️ Nix", domain = { DomainName = "Nix" } },
 	{ label = "🐬 MyServer", domain = { DomainName = "MyServer" } },
 }
--- if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-table.insert(launch_menu, {
-	label = "🦚 Local",
-	domain = { DomainName = "local" },
-	-- args = { "powershell.exe", "-NoLogo" },
-	args = { "nu", "-i" },
-})
--- end
+if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+	table.insert(launch_menu, {
+		label = "🦚 Local",
+		domain = { DomainName = "local" },
+		args = { "nu", "-i" },
+	})
+end
 config.launch_menu = launch_menu
 
 -- key config
-config.leader = { key = "w", mods = "ALT", timeout_milliseconds = 5000 }
+config.leader = { key = "`", mods = "ALT", timeout_milliseconds = 5000 }
 config.keys = {
 	-- set <C-v> for paste
 	{
@@ -121,13 +119,13 @@ config.keys = {
 		action = wezterm.action.ShowLauncherArgs({ flags = "LAUNCH_MENU_ITEMS" }),
 	},
 	{
-		key = ";",
-		mods = "LEADER",
+		key = ":",
+		mods = "CTRL|SHIFT",
 		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
 	},
 	{
-		key = "'",
-		mods = "LEADER",
+		key = '"',
+		mods = "CTRL|SHIFT",
 		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	{
@@ -185,9 +183,9 @@ config.default_cursor_style = "BlinkingBlock"
 -- config.cursor_blink_ease_out = "Linear"
 
 -- set transparent
-config.window_background_opacity = 0.83
+-- config.window_background_opacity = 0.83
 config.win32_system_backdrop = "Acrylic" -- "Auto" or "Acrylic"
-config.color_scheme = "Catppuccin Mocha (Gogh)"
+config.color_scheme = "Gruvbox Material (Gogh)"
 config.animation_fps = 165
 config.default_domain = "Nix"
 config.max_fps = 165
