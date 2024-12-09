@@ -32,15 +32,24 @@ function module.apply(config)
 
 	-- launch_menu
 	local launch_menu = {
-		{ label = "❄️ Nix", domain = { DomainName = "Nix" } },
 		{ label = "🍥 MyServer", domain = { DomainName = "MyServer" } },
 		-- { label = "WSL:Nixos", domain = { DomainName = "WSL:NixOS" } },
 	}
+	if wezterm.target_triple == "aarch64-apple-darwin" then
+		table.insert(launch_menu, 1, {
+			label = "🍏 Local",
+			domain = { DomainName = "local" },
+		})
+	end
 	if wezterm.target_triple == "x86_64-pc-windows-msvc" then
 		table.insert(launch_menu, 2, {
 			label = "🦚 Local",
 			domain = { DomainName = "local" },
 			args = { "pwsh", "-NoLogo" },
+		})
+		table.insert(launch_menu, 1, {
+			label = "❄️ Nix",
+			domain = { DomainName = "Nix" },
 		})
 	end
 	config.launch_menu = launch_menu

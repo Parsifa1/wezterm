@@ -12,8 +12,7 @@ domains.apply(config)
 -- set initial size for screens
 config.initial_rows = 42
 config.initial_cols = 170
--- set front_end
-config.front_end = "OpenGL"
+config.front_end = "WebGpu"
 config.webgpu_power_preference = "HighPerformance"
 
 -- config of tab bar
@@ -30,7 +29,13 @@ config.win32_system_backdrop = "Acrylic" -- "Auto" or "Acrylic"
 config.color_scheme = "Gruvbox Material (Gogh)"
 config.animation_fps = 144
 config.default_domain = "local"
-config.default_prog = { "pwsh", "-NoLogo" }
+
+if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+    -- set front_end
+    config.front_end = "OpenGL"
+    config.default_prog = { "pwsh", "-NoLogo" }
+end
+
 config.max_fps = 144
 config.enable_kitty_graphics = true
 config.window_close_confirmation = "NeverPrompt"
