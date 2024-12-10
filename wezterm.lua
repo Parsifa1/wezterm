@@ -31,8 +31,6 @@ config.animation_fps = 144
 config.default_domain = "local"
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-    -- set front_end
-    config.front_end = "OpenGL"
     config.default_prog = { "pwsh", "-NoLogo" }
 end
 
