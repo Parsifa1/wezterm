@@ -14,7 +14,7 @@ function module.apply(config)
 
 	-- set tab title
 	wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-		local icon = { Nix = "❄️ Nix", MyServer = "🍥 MyServer", ["local"] = "🦚 Local" }
+		local icon = { Nix = "❄️ Nix", MyServer = "🍥 MyServer", ["local"] = "🦚 Local", ["Nix:remote"] = "❄️ Nix" }
 		local title = icon[tab.active_pane.domain_name] or tab.active_pane.title
 
 		local foreground = "#666666"
@@ -52,8 +52,8 @@ function module.apply(config)
 		-- { family = "JetBrains Mono" },
 		{ family = "Iosevka Cloudtide" },
 		{ family = "Symbols Nerd Font Mono", scale = 0.85 },
-		{ family = "Concrete Math", scale = 1.0 },
-		{ family = "LXGW WenKai", scale = 1.05 }, --中文测试
+		{ family = "Concrete Math",          scale = 1.0 },
+		{ family = "LXGW WenKai",            scale = 1.05 }, --中文测试
 	})
 
 	-- colors

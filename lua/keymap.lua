@@ -63,6 +63,11 @@ function module.apply(config)
 			action = wezterm.action.AttachDomain("MyServer"),
 		},
 		{
+			key = "N",
+			mods = "CTRL|SHIFT",
+			action = wezterm.action.AttachDomain("Nix:remote"),
+		},
+		{
 			key = "D",
 			mods = "CTRL|SHIFT",
 			action = wezterm.action.DetachDomain("CurrentPaneDomain"),
