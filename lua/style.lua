@@ -34,7 +34,6 @@ function module.apply(config)
 		config.font_size = 14
 		-- padding
 		config.window_padding = {
-			left = "0cell",
 			right = "0cell",
 			top = "0.15cell",
 			bottom = "0cell",
@@ -42,7 +41,6 @@ function module.apply(config)
 	elseif wezterm.target_triple == "aarch64-apple-darwin" then
 		config.font_size = 18
 		config.window_padding = {
-			left = "0cell",
 			right = "0cell",
 			top = "1cell",
 			bottom = "0cell",
