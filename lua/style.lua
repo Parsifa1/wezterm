@@ -39,10 +39,10 @@ function module.apply(config)
 			bottom = "0cell",
 		}
 	elseif wezterm.target_triple == "aarch64-apple-darwin" then
-		config.font_size = 18
+		config.font_size = 18.3 
 		config.window_padding = {
 			right = "0cell",
-			top = "1cell",
+			top = "1.6cell",
 			bottom = "0cell",
 		}
 	end
