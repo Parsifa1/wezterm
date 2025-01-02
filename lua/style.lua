@@ -12,10 +12,15 @@ function module.apply(config)
         end
     end)
 
-    -- set tab title
-    wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-        local icon = { Nix = "❄️ Nix", MyServer = "🍥 MyServer", ["local"] = "🦚 Local", ["Nix:remote"] = "❄️ Nix" }
-        local title = icon[tab.active_pane.domain_name] or tab.active_pane.title
+	-- set tab title
+	wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+		local icon = {
+			["Nix"] = "❄️ Nix",
+			["local"] = "🦚 Local",
+			["MyServer"] = "🍥 MyServer",
+			["Nix:remote"] = "❄️ Nix",
+		}
+		local title = icon[tab.active_pane.domain_name] or tab.active_pane.title
 
         local foreground = "#666666"
         if tab.is_active then

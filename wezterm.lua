@@ -26,12 +26,13 @@ config.default_cursor_style = "BlinkingBlock"
 -- set transparent
 -- config.window_background_opacity = 0.83
 config.win32_system_backdrop = "Acrylic" -- "Auto" or "Acrylic"
-config.color_scheme = "Gruvbox Material (Gogh)"
+config.color_scheme = "Everforest Dark (Gogh)"
+-- config.color_scheme = "Gruvbox Material (Gogh)"
 config.animation_fps = 144
 config.default_domain = "local"
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-    config.default_prog = { "pwsh", "-NoLogo" }
+	config.default_prog = { "pwsh", "-NoLogo" }
 end
 
 config.max_fps = 144
