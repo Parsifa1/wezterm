@@ -67,9 +67,8 @@ function module.apply(config)
 		}
 	end
 	config.font = wezterm.font_with_fallback({
-		-- { family = "JetBrains Mono" },
-		{ family = "Iosevka Cloudtide" },
-		{ family = "Symbols Nerd Font Mono", scale = 0.85 },
+		{ family = "IosevkaCloudtide Nerd Font" },
+		-- { family = "Symbols Nerd Font Mono", scale = 0.85 },
 		{ family = "Concrete Math", scale = 1.0 },
 		{ family = "LXGW WenKai", scale = 1.05 }, --中文测试
 	})
